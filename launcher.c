@@ -62,9 +62,9 @@ void EgxCanvas_DrawRect(EgxCanvas* self, EgxCanvas_Rect* rect)
     const EGX_SZ rx = rect->x;
     const EGX_SZ rw = rect->w;
     const EGX_SZ fw = f->width;
-    const EGX_SZ h1 = (rect->h + rect->y) * fw, w1 = rx+rw-1;
+    const EGX_SZ h1 = (rect->h - 1 + rect->y) * fw, w1 = rx+rw-1;
     const EGX_SZ of1y = rect->y * fw + rx,
-                 of2y = (rect->y + rect->h) * fw + rx;
+                 of2y = (rect->y + rect->h - 1) * fw + rx;
 
     for(EGX_SZ x = 0; x < rw; ++x)
         f->buffer[of1y + x] = f->buffer[of2y + x] = rect->border;
@@ -79,6 +79,10 @@ void EgxCanvas_DrawRect(EgxCanvas* self, EgxCanvas_Rect* rect)
 
 void EgxWindow_Display(EgxWindow* self)
 {
+    for(EGX_SZ x = 0; x < self->frame->width; ++x)
+        putc('-', stdout);
+    putc('\n', stdout);
+    
     for(EGX_SZ y = 0; y < self->frame->height; ++y)
     {
         for(EGX_SZ x = 0; x < self->frame->width; ++x)
@@ -90,6 +94,10 @@ void EgxWindow_Display(EgxWindow* self)
         }
         putc('\n', stdout);
     }
+
+    for(EGX_SZ x = 0; x < self->frame->width; ++x)
+        putc('-', stdout);
+    putc('\n', stdout);
 }
 
 int main()
