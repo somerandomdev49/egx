@@ -102,7 +102,7 @@ void EgxWindow_Display(EgxWindow* self)
 
 int main()
 {
-    EGX_SZ W = 16, H = 16;
+    EGX_SZ W = 1600, H = 1600;
     EGX_BYTE* buffer = malloc(W * H);
     memset(buffer, 0, W * H);
 
@@ -122,7 +122,7 @@ int main()
     };
     EgxCanvas_DrawRect(&window.canvas, &rect);
 
-    EgxWindow_Display(&window);
+    // EgxWindow_Display(&window);
 
     EgxWindow_DeInit(&window);
 
