@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "temp": "asm-intel-x86-generic",
+        "stdio.h": "c"
+    }
+}

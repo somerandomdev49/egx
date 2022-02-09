@@ -1,4 +1,4 @@
-#include "egx.h"
+#include <egx/egx.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,23 +44,36 @@ Egx_RGB_Ext EgxBackend_IMG_Ext__RGB_From_8_3x3x2(EGX_BYTE c)
         64 * ((c & 0b00000011) >> 0) };
 }
 
+static void EgxBackend_IMG_Ext__WriteInt(EgxBackend_IMG_IO_Ext* io, void* fp, EGX_SZ k)
+{
+    if(k < 0) { io->write1_file(fp, '-'); k = -k; }
+    if(k > 9) EgxBackend_IMG_Ext__WriteInt(io, fp, k/10);
+    io->write1_file(fp, '0' + (k % 10));
+}
+
 static void EgxBackend_IMG_Ext__render(EgxBackend* b)
 {
-
+    EgxBackend_IMG_Ext* bb = (EgxBackend_IMG_Ext*)b;
     EgxWindow* w = b->bound;
     EgxFrame *f = w->frame;
-    FILE* fp = fopen("out.ppm", "wb");
-    /* write header to the file */
-    fprintf(fp, "P6 %d %d %d\n", f->width, f->height, 255);
+    void* fp = bb->io->open_file("out.ppm");
+
+    bb->io->writeN_file(fp, "P6 ", 3);
+    EgxBackend_IMG_Ext__WriteInt(bb->io, fp, f->width);
+    bb->io->write1_file(fp, ' ');
+    EgxBackend_IMG_Ext__WriteInt(bb->io, fp, f->height);
+    bb->io->write1_file(fp, ' ');
+    EgxBackend_IMG_Ext__WriteInt(bb->io, fp, 255);
+    bb->io->write1_file(fp, '\n');
     
     for(EGX_SZ y = 0; y < f->height; ++y)
         for(EGX_SZ x = 0; x < f->width; ++x)
         {
             Egx_RGB_Ext rgba = EgxBackend_IMG_Ext__RGB_From_8_3x3x2(f->buffer[y * f->width + x]);
-            fwrite(&rgba, sizeof(Egx_RGB_Ext), 1, fp);
+            bb->io->writeN_file(fp, &rgba, sizeof(Egx_RGB_Ext));
         }
     
-    fclose(fp);
+    bb->io->close_file(fp);
 }
 
 void EgxBackend_IMG_Ext_Init(EgxBackend* self, EgxWindow* window)

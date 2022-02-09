@@ -1,11 +1,6 @@
-#ifndef EGX_HEADER_
-#define EGX_HEADER_
-
-typedef unsigned char EGX_BYTE;
-typedef unsigned short EGX_SZ;
-typedef _Bool EGX_BOOL;
-#define EGX_TRUE (1)
-#define EGX_FALSE (0)
+#ifndef EGX_CORE_HEADER_
+#define EGX_CORE_HEADER_
+#include <egx/egx_type.h>
 
 typedef struct
 {
@@ -73,6 +68,20 @@ struct EgxBackend
 typedef struct { EGX_BYTE r, g, b, a; } Egx_RGBA_Ext;
 typedef struct { EGX_BYTE r, g, b; } Egx_RGB_Ext;
 
+typedef struct
+{
+    void* (*open_file)(const char* fname);
+    void (*writeN_file)(void* file, EGX_BYTE* data, EGX_SZ size);
+    void (*write1_file)(void* file, EGX_BYTE byte);
+    void (*close_file)(void* file);
+} EgxBackend_IMG_IO_Ext;
+
+typedef struct
+{   
+    EgxBackend base;
+    EgxBackend_IMG_IO_Ext* io;
+} EgxBackend_IMG_Ext;
+
 void EgxFrame_Init(EgxFrame* self, EGX_SZ w, EGX_SZ h, EGX_BYTE* buf);
 void EgxCanvas_Init(EgxCanvas* self, EgxWindow* target);
 void EgxCanvas_DeInit(EgxCanvas* self);
@@ -81,6 +90,6 @@ void EgxWindow_DeInit(EgxWindow* self);
 void EgxCanvas_DrawRect(EgxCanvas* self, EgxCanvas_Rect* rect);
 void EgxWindow_SetBackend(EgxWindow* self, EgxBackend* back);
 void EgxWindow_Display(EgxWindow* self);
-void EgxBackend_IMG_Ext_Init(EgxBackend* self, EgxWindow* window);
+void EgxBackend_IMG_Ext_Init(EgxBackend_IMG_Ext* self, EgxWindow* window, EgxBackend_IMG_IO_Ext* io);
 
 #endif

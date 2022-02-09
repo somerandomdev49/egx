@@ -1,4 +1,4 @@
-#include "egx.h"
+#include <egx/egx.h>
 
 void EgxFrame_Init(EgxFrame* self, EGX_SZ w, EGX_SZ h, EGX_BYTE* buf)
 {
@@ -46,50 +46,4 @@ void EgxCanvas_DrawRect(EgxCanvas* self, EgxCanvas_Rect* rect)
     for(EGX_SZ y = (rect->y+1)*fw; y < h1-rx; y += fw)
         for(EGX_SZ x = rx+1; x < w1; ++x)
             f->buffer[y+x] = f->buffer[y+x] = rect->fill;
-}
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-int main()
-{
-    EGX_SZ W = 256, H = 256;
-    EGX_BYTE* buffer = malloc(W * H);
-    memset(buffer, 0, W * H);
-
-    EgxFrame frame;
-    EgxFrame_Init(&frame, W, H, buffer);
-
-    EgxWindow window;    
-    EgxWindow_Init(&window, &frame);
-
-    for(EGX_SZ x = 0; x < W / (16 + 2); ++x)
-    for(EGX_SZ y = 0; y < W / (16 + 2); ++y)
-    {
-        EgxCanvas_Rect rect = {
-            .border = 0xFF,
-            .fill = 0x80,
-            .x = x * (16 + 2) + 1,
-            .y = y * (16 + 2) + 1,
-            .w = 16,
-            .h = 16,
-        };
-        EgxCanvas_DrawRect(&window.canvas, &rect);
-    }
-
-    // extern Egx_RGB_Ext EgxBackend_IMG_Ext__RGB_From_8_3x3x2(EGX_BYTE c);
-    // printf("0x%06x\n", EgxBackend_IMG_Ext__RGB_From_8_3x3x2(0b11100011));
-
-    // for(EGX_SZ y = 0; y < H; ++y)
-    //     for(EGX_SZ i = 0; i < 256; ++i)
-    //         window.frame->buffer[y * W + i] = i;
-
-    EgxBackend backend;
-    EgxBackend_IMG_Ext_Init(&backend, &window);
-    backend.render(&backend);
-
-    EgxWindow_DeInit(&window);
-
-    free(buffer);
 }
