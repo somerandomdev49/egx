@@ -69,16 +69,18 @@ static void EgxBackend_IMG_Ext__render(EgxBackend* b)
     for(EGX_SZ y = 0; y < f->height; ++y)
         for(EGX_SZ x = 0; x < f->width; ++x)
         {
-            Egx_RGB_Ext rgba = EgxBackend_IMG_Ext__RGB_From_8_3x3x2(f->buffer[y * f->width + x]);
-            bb->io->writeN_file(fp, &rgba, sizeof(Egx_RGB_Ext));
+            Egx_RGB_Ext rgb = EgxBackend_IMG_Ext__RGB_From_8_3x3x2(f->buffer[y * f->width + x]);
+            bb->io->writeN_file(fp, &rgb, sizeof(Egx_RGB_Ext));
         }
     
     bb->io->close_file(fp);
 }
 
-void EgxBackend_IMG_Ext_Init(EgxBackend* self, EgxWindow* window)
+void EgxBackend_IMG_Ext_Init(EgxBackend_IMG_Ext* self, EgxWindow* window, EgxBackend_IMG_IO_Ext* io)
 {
-    self->render = &EgxBackend_IMG_Ext__render;
-    self->bound = window;
-    self->single = EGX_TRUE;
+    self->base.render = &EgxBackend_IMG_Ext__render;
+    self->base.bound = window;
+    self->io = io;
+    self->base.single = EGX_TRUE;
 }
+

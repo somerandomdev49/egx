@@ -71,7 +71,7 @@ typedef struct { EGX_BYTE r, g, b; } Egx_RGB_Ext;
 typedef struct
 {
     void* (*open_file)(const char* fname);
-    void (*writeN_file)(void* file, EGX_BYTE* data, EGX_SZ size);
+    void (*writeN_file)(void* file, void* data, EGX_SZ size);
     void (*write1_file)(void* file, EGX_BYTE byte);
     void (*close_file)(void* file);
 } EgxBackend_IMG_IO_Ext;

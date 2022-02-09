@@ -1,11 +1,11 @@
 #include <egx/egx.h>
+#include <egx/egx_ext.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 int main()
 {
-    return 1;
     EGX_SZ W = 256, H = 256;
     EGX_BYTE* buffer = malloc(W * H);
     memset(buffer, 0, W * H);
@@ -30,9 +30,12 @@ int main()
         EgxCanvas_DrawRect(&window.canvas, &rect);
     }
     
-    EgxBackend backend;
-    EgxBackend_IMG_Ext_Init(&backend, &window);
-    backend.render(&backend);
+    EgxBackend_IMG_Ext backend;
+    EgxBackend_IMG_IO_Ext backend_io;
+    EgxBackend_IMG_IO_Ext_SetLibC(&backend_io);
+    
+    EgxBackend_IMG_Ext_Init(&backend, &window, &backend_io);
+    backend.base.render((EgxBackend*)&backend);
 
     EgxWindow_DeInit(&window);
 
